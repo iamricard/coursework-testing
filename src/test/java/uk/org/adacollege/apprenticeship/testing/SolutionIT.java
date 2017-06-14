@@ -29,6 +29,7 @@ public class SolutionIT {
   private static String logInButtonId = "login-button";
   private static String logOutButtonId = "log-out-button";
   private static String popupMessageId = "global-snackbar";
+  private static String footerRightId = "footer-right";
 
   // ========= UTILITY METHODS =========
 
@@ -156,7 +157,10 @@ public class SolutionIT {
   // Step 2
   @Test
   public void notLoggedIn_checkCurrentPage() {
-    // TODO
+    assertUrlEquals(startUrl + "#!/login");
+    assertTitleEquals("whipbird: log in");
+    assertElementTextEquals(By.cssSelector("h4"), "Log in");
+    assertElementTextEquals(By.id(footerRightId), "");
   }
 
   // Step 3
