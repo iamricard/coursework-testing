@@ -161,7 +161,12 @@ public class SolutionIT {
   // Step 3
   @Test
   public void notLoggedIn_clickAboutMenu() {
-    // TODO
+    wait.until(presenceOfElementLocated(By.id(aboutMenuId)));
+    driver.findElement(By.id(aboutMenuId)).click();
+
+    assertUrlEquals(startUrl + "#!/about");
+    assertTitleEquals("whipbird: about");
+    assertElementTextEquals(By.cssSelector("h4"), "About this app");
   }
 
   // Step 4
