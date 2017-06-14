@@ -37,12 +37,7 @@ public class SolutionIT {
    * Source & usage: https://stackoverflow.com/a/5709805
    */
   private static Function<WebDriver, WebElement> presenceOfElementLocated(final By locator) {
-    return new Function<WebDriver, WebElement>() {
-      @Override
-      public WebElement apply(WebDriver driver) {
-        return driver.findElement(locator);
-      }
-    };
+    return driver -> driver.findElement(locator);
   }
 
   private static void logIn(Boolean withValidCredentials) {
@@ -62,11 +57,11 @@ public class SolutionIT {
     driver.findElement(By.id(logInButtonId)).click();
 
     if (withValidCredentials) {
-      wait.until(new ExpectedCondition<Boolean>() {
-        public Boolean apply(WebDriver driver) {
-          return driver.getTitle().equals("whipbird: my whipbirds");
-        }
-      });
+      wait.until((ExpectedCondition<Boolean>) driver ->
+        driver
+        .getTitle()
+        .equals("whipbird: my whipbirds")
+      );
     }
   }
 
