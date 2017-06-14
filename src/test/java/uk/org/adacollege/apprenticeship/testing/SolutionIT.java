@@ -10,6 +10,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.function.Function;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class SolutionIT {
@@ -115,6 +116,10 @@ public class SolutionIT {
   }
 
   private static void addAndDelete(String name, String age, Runnable assertions) {
+    addAndDelete(name, age, assertions, () -> {});
+  }
+
+  private static void addAndDelete(String name, String age, Runnable assertions, Runnable after) {
     wait.until(presenceOfElementLocated(By.id(newWhipbirdNameId)));
     driver.findElement(By.id(newWhipbirdNameId)).sendKeys(name);
 
@@ -130,6 +135,8 @@ public class SolutionIT {
     WebElement b = driver.findElement(lastWhipbirdSelector);
 
     b.findElement(By.tagName("button")).click();
+
+    after.run();
   }
 
   // ========= SCAFFOLDING =========
@@ -260,13 +267,21 @@ public class SolutionIT {
 
     addAndDelete("Brucette", "100000", () -> {
       assertElementTextEquals(By.id(popupMessageId), "Whipbird added: Brucette");
-      assertTrue(driver.getPageSource().contains("Brucette"));
+      assertTrue(driver.findElement(By.cssSelector("#whipbirds-list")).getText().contains("Brucette"));
     });
   }
 
   // Step 9
   @Test
   public void loggedIn_addNewWhipbirdThenDeleteIt() {
-    // TODO
+    logIn(true);
+
+    addAndDelete("Brucette", "100000", () -> {
+      assertElementTextEquals(By.id(popupMessageId), "Whipbird added: Brucette");
+      assertTrue(driver.findElement(By.cssSelector("#whipbirds-list")).getText().contains("Brucette"));
+    }, () -> {
+      assertElementTextEquals(By.id(popupMessageId), "Whipbird deleted: Brucette");
+      assertFalse(driver.findElement(By.cssSelector("#whipbirds-list")).getText().contains("Brucette"));
+    });
   }
 }
