@@ -172,7 +172,21 @@ public class SolutionIT {
   // Step 4
   @Test
   public void notLoggedIn_logInWithIncorrectCredentials() {
-    // TODO
+    logIn(false);
+    assertElementPresent(logInMenuId);
+    assertElementNotPresent(logOutMenuId);
+    assertElementPresent(aboutMenuId);
+    assertElementNotPresent(myWhipbirdsMenuId);
+
+    assertUrlEquals(startUrl + "#!/login");
+    assertTitleEquals("whipbird: log in");
+
+    assertElementTextEquals(
+      By.id(popupMessageId),
+      "Username or password incorrect"
+    );
+
+    assertElementTextEquals(By.id(footerRightId), "");
   }
 
   // --------- WHEN LOGGED IN ---------
