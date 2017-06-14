@@ -30,6 +30,9 @@ public class SolutionIT {
   private static String logOutButtonId = "log-out-button";
   private static String popupMessageId = "global-snackbar";
   private static String footerRightId = "footer-right";
+  private static String newWhipbirdNameId = "name";
+  private static String newWhipbirdAgeId = "age";
+  private static String newWhipbirdButton = "add-new-whipbird-button";
 
   // ========= UTILITY METHODS =========
 
@@ -109,6 +112,24 @@ public class SolutionIT {
       .getText()
       .equals(expectedText)
     ));
+  }
+
+  private static void addAndDelete(String name, String age, Runnable assertions) {
+    wait.until(presenceOfElementLocated(By.id(newWhipbirdNameId)));
+    driver.findElement(By.id(newWhipbirdNameId)).sendKeys(name);
+
+    wait.until(presenceOfElementLocated(By.id(newWhipbirdAgeId)));
+    driver.findElement(By.id(newWhipbirdAgeId)).sendKeys(age);
+
+    wait.until(presenceOfElementLocated(By.id(newWhipbirdButton)));
+    driver.findElement(By.tagName("form")).submit();
+
+    assertions.run();
+
+    By lastWhipbirdSelector = By.cssSelector("#whipbirds-list > p:last-child");
+    WebElement b = driver.findElement(lastWhipbirdSelector);
+
+    b.findElement(By.tagName("button")).click();
   }
 
   // ========= SCAFFOLDING =========
@@ -235,7 +256,12 @@ public class SolutionIT {
   // Step 8
   @Test
   public void loggedIn_addNewWhipbird() {
-    // TODO
+    logIn(true);
+
+    addAndDelete("Brucette", "100000", () -> {
+      assertElementTextEquals(By.id(popupMessageId), "Whipbird added: Brucette");
+      assertTrue(driver.getPageSource().contains("Brucette"));
+    });
   }
 
   // Step 9
